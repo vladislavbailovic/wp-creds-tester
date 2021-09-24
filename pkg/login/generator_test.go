@@ -1,14 +1,15 @@
 package login
 
 import (
+	"fmt"
 	"testing"
 	"wpc/pkg/data"
 )
 
 func TestLoginGenerator(t *testing.T) {
 	gen := Generator{
-		usernames: NewSource([]string{"user1", "user2", "user3"}),
-		passwords: NewSource([]string{"pass1", "pass2", "pass3"}),
+		usernames: NewSource(makeTestList("user", 13)),
+		passwords: NewSource(makeTestList("pass", 12)),
 	}
 	processed := 0
 
@@ -23,7 +24,7 @@ func TestLoginGenerator(t *testing.T) {
 		}
 		batchSize++
 		processed++
-		if batchSize >= 2 {
+		if batchSize >= 10 {
 			batchSize = 0
 		}
 	}
@@ -31,4 +32,12 @@ func TestLoginGenerator(t *testing.T) {
 	if processed != gen.Size() {
 		t.Fatalf("expected all to be processed (%d), got %d", gen.Size(), processed)
 	}
+}
+
+func makeTestList(suffix string, length int) []string {
+	res := []string{}
+	for i := 1; i <= length; i++ {
+		res = append(res, fmt.Sprintf("%s-%d", suffix, i))
+	}
+	return res
 }
