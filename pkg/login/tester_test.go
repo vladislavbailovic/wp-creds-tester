@@ -106,7 +106,6 @@ func TestTesterDoesNotValidateNonAdminRedirects(t *testing.T) {
 			}
 		}
 	})
-
 }
 
 func sendErrorHeader(w http.ResponseWriter, msg string) {

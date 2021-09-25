@@ -60,7 +60,7 @@ func (t Tester) Test(client *web.Client) []data.ValidatedCreds {
 
 func (t Tester) validateCreds(creds data.Creds, client *web.Client) data.ValidatedCreds {
 	response := client.Request(t.url, creds)
-	if isRedirectingToAdmin(response) {
+	if isLoginSuccessful(response) {
 		return data.NewValidatedCreds(creds, true)
 	}
 
@@ -85,4 +85,18 @@ func isRedirectingToAdmin(response *http.Response) bool {
 	}
 
 	return true
+}
+
+func hasLoggedInCookie(response *http.Response) bool {
+	hasCookie := false
+	for _, cookie := range response.Cookies() {
+		if strings.HasPrefix(cookie.Name, "wordpress_logged_in") {
+			hasCookie = true
+		}
+	}
+	return hasCookie
+}
+
+func isLoginSuccessful(response *http.Response) bool {
+	return isRedirectingToAdmin(response) && hasLoggedInCookie(response)
 }
