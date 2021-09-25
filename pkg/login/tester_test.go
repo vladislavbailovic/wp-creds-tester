@@ -8,7 +8,7 @@ import (
 	"wpc/pkg/web"
 )
 
-func TestTesterDoesNotValidateNonAdminRedirects(t *testing.T) {
+func TestTesterDoesNotValidateNonRedirects(t *testing.T) {
 	g := &Generator{
 		usernames: NewSource([]string{"user1", "user2", "user3"}),
 		passwords: NewSource([]string{"pass1", "pass2", "pass3"}),
@@ -84,6 +84,29 @@ func TestTesterValidatesAdminRedirects(t *testing.T) {
 			}
 		}
 	})
+}
+
+func TestTesterDoesNotValidateNonAdminRedirects(t *testing.T) {
+	g := &Generator{
+		usernames: NewSource([]string{"user1", "user2", "user3"}),
+		passwords: NewSource([]string{"pass1", "pass2", "pass3"}),
+	}
+	c := web.NewClient()
+
+	runTestServer(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("location", "/whatever/")
+		w.WriteHeader(302)
+		return
+	}, func(server *httptest.Server) {
+		test := NewTester(server.URL, g)
+		result := test.Test(c)
+		for _, actual := range result {
+			if actual.IsValid() {
+				t.Fatalf("all combos should be invalid: %s/%s", actual.Username(), actual.Password())
+			}
+		}
+	})
+
 }
 
 func sendErrorHeader(w http.ResponseWriter, msg string) {
