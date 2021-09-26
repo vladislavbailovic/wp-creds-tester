@@ -23,7 +23,7 @@ func TestEmitterCasting(t *testing.T) {
 				t.Fatalf("expected creds to be %s: %s/%s", expected, creds.Username(), creds.Password())
 			}
 		}
-		em.Subscribe("test", handler)
+		em.Subscribe(EventType("test"), handler)
 		em.Publish("test", source)
 	}
 }
@@ -33,7 +33,7 @@ func TestSubscriberStorage(t *testing.T) {
 	evt := func(data []interface{}) {
 		return
 	}
-	key := "test key"
+	key := EventType("test key")
 
 	if len(store.Get(key)) != 0 {
 		t.Fatalf("expected store length to initially be 0")

@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"wpc/pkg/data"
 	"wpc/pkg/web"
 )
 
@@ -105,6 +106,30 @@ func TestTesterDoesNotValidateNonAdminRedirects(t *testing.T) {
 				t.Fatalf("all combos should be invalid: %s/%s", actual.Username(), actual.Password())
 			}
 		}
+	})
+}
+
+func TestTesterEmitsValidatedEvent(t *testing.T) {
+	g := &Generator{
+		usernames: NewSource([]string{"user1", "user2", "user3"}),
+		passwords: NewSource([]string{"pass1", "pass2", "pass3"}),
+	}
+	c := web.NewClient()
+	handler := func(evtData []interface{}) {
+		actual := evtData[0].(data.ValidatedCreds)
+		if actual.IsValid() {
+			t.Fatalf("expected invalid creds: %s/%s", actual.Username(), actual.Password())
+		}
+	}
+
+	runTestServer(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("location", "/whatever/")
+		w.WriteHeader(302)
+		return
+	}, func(server *httptest.Server) {
+		test := NewTester(server.URL, g)
+		test.Subscribe(EVT_VALIDATED, handler)
+		test.Test(c)
 	})
 }
 

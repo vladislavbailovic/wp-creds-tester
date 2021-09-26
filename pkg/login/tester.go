@@ -10,16 +10,22 @@ import (
 
 const (
 	DEFAULT_THREADS int = 5
+
+	EVT_VALIDATED data.EventType = data.EventType("validated")
+	EVT_START     data.EventType = data.EventType("start")
+	EVT_DONE      data.EventType = data.EventType("done")
 )
 
 type Tester struct {
+	data.Emitter
 	url       string
 	generator *Generator
 	threads   int
 }
 
 func NewTester(url string, generator *Generator) Tester {
-	return Tester{url, generator, DEFAULT_THREADS}
+	emitter := data.NewEmitter()
+	return Tester{emitter, url, generator, DEFAULT_THREADS}
 }
 
 func (t *Tester) SetThreads(threads int) {
@@ -30,6 +36,8 @@ func (t Tester) Test(client *web.Client) []data.ValidatedCreds {
 	conduit := make(chan data.Creds)
 	result := []data.ValidatedCreds{}
 	var wg sync.WaitGroup
+
+	t.Publish(EVT_START)
 
 	go t.generator.Generate(conduit)
 	pool := data.NewRange(t.threads)
@@ -44,7 +52,7 @@ func (t Tester) Test(client *web.Client) []data.ValidatedCreds {
 			defer wg.Done()
 			res := t.validateCreds(c, client)
 			result = append(result, res)
-			// fmt.Println(res)
+			t.Publish(EVT_VALIDATED, res)
 		}(creds)
 		pool.Advance()
 		if !pool.HasNext() {
@@ -54,6 +62,8 @@ func (t Tester) Test(client *web.Client) []data.ValidatedCreds {
 		}
 	}
 	wg.Wait()
+
+	t.Publish(EVT_DONE, result)
 
 	return result
 }

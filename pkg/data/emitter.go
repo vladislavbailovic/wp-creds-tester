@@ -1,12 +1,14 @@
 package data
 
+type EventType string
+
 type Subscriber func([]interface{})
 
 type SubscriberStorage struct {
-	store map[string][]Subscriber
+	store map[EventType][]Subscriber
 }
 
-func (store SubscriberStorage) Get(key string) []Subscriber {
+func (store SubscriberStorage) Get(key EventType) []Subscriber {
 	_, ok := store.store[key]
 	if !ok {
 		return []Subscriber{}
@@ -14,7 +16,7 @@ func (store SubscriberStorage) Get(key string) []Subscriber {
 	return store.store[key]
 }
 
-func (store *SubscriberStorage) Add(key string, handler Subscriber) {
+func (store *SubscriberStorage) Add(key EventType, handler Subscriber) {
 	_, ok := store.store[key]
 	if !ok {
 		store.store[key] = []Subscriber{}
@@ -23,7 +25,7 @@ func (store *SubscriberStorage) Add(key string, handler Subscriber) {
 }
 
 func NewSubscriberStorage() *SubscriberStorage {
-	store := make(map[string][]Subscriber)
+	store := make(map[EventType][]Subscriber)
 	return &SubscriberStorage{store}
 }
 
@@ -31,11 +33,11 @@ type Emitter struct {
 	handlers *SubscriberStorage
 }
 
-func (e Emitter) Subscribe(event string, handler Subscriber) {
+func (e Emitter) Subscribe(event EventType, handler Subscriber) {
 	e.handlers.Add(event, handler)
 }
 
-func (e Emitter) Publish(event string, args ...interface{}) {
+func (e Emitter) Publish(event EventType, args ...interface{}) {
 	for _, handler := range e.handlers.Get(event) {
 		handler(args)
 	}
