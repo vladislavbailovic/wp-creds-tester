@@ -11,7 +11,7 @@ func NewPrinter() Printer {
 	return Printer{}
 }
 
-func (p Printer) Format(creds data.ValidatedCreds) string {
+func (p Printer) FormatItem(creds data.ValidatedCreds) string {
 	valid := "invalid"
 	if creds.IsValid() {
 		valid = "valid"
@@ -19,14 +19,38 @@ func (p Printer) Format(creds data.ValidatedCreds) string {
 	return fmt.Sprintf("%s:%s\t[%s]", creds.Username(), creds.Password(), valid)
 }
 
-func (p Printer) Print(creds data.ValidatedCreds) {
-	fmt.Println(p.Format(creds))
+func (p Printer) PrintItem(creds data.ValidatedCreds) {
+	fmt.Println(p.FormatItem(creds))
 }
 
-func (p Printer) PrintSubscriber(eventData []interface{}) {
+func (p Printer) PrintHeader() {
+	fmt.Println("---- start ----")
+}
+
+func (p Printer) PrintFooter() {
+	fmt.Println("---- end ----")
+}
+
+type PrintSubscriber struct {
+	Printer
+}
+
+func NewPrintSubscriber() PrintSubscriber {
+	return PrintSubscriber{NewPrinter()}
+}
+
+func (ps PrintSubscriber) Item(evtData []interface{}) {
 	var creds data.ValidatedCreds
-	for _, item := range eventData {
+	for _, item := range evtData {
 		creds = item.(data.ValidatedCreds)
-		p.Print(creds)
+		ps.PrintItem(creds)
 	}
+}
+
+func (ps PrintSubscriber) Header(evtData []interface{}) {
+	ps.PrintHeader()
+}
+
+func (ps PrintSubscriber) Footer(evtData []interface{}) {
+	ps.PrintFooter()
 }

@@ -9,6 +9,10 @@ type Generator struct {
 	passwords Source
 }
 
+func NewGenerator(usernames, passwords Source) *Generator {
+	return &Generator{usernames, passwords}
+}
+
 func (gen *Generator) Generate(conduit chan data.Creds) {
 	defer close(conduit)
 
