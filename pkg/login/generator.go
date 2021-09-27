@@ -5,11 +5,11 @@ import (
 )
 
 type Generator struct {
-	usernames Source
-	passwords Source
+	usernames data.Source
+	passwords data.Source
 }
 
-func NewGenerator(usernames, passwords Source) *Generator {
+func NewGenerator(usernames, passwords data.Source) *Generator {
 	return &Generator{usernames, passwords}
 }
 
