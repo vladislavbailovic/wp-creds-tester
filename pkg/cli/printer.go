@@ -47,6 +47,15 @@ func (ps PrintSubscriber) Item(evtData []interface{}) {
 	}
 }
 
+func (ps PrintSubscriber) Items(evtData []interface{}) {
+	if len(evtData) > 0 {
+		creds := evtData[0].([]data.ValidatedCreds)
+		for _, item := range creds {
+			ps.PrintItem(item)
+		}
+	}
+}
+
 func (ps PrintSubscriber) Header(evtData []interface{}) {
 	ps.PrintHeader()
 }

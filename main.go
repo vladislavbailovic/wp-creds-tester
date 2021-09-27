@@ -16,11 +16,12 @@ func main() {
 		login.NewSource(opts.Usernames),
 		login.NewSource(opts.Passwords),
 	)
-	tester := login.NewTester("http://multiwp.test/wp-login.php", generator)
+	tester := login.NewTester(opts.URL, generator)
 
 	printer := cli.NewPrintSubscriber()
 	tester.Subscribe(login.EVT_START, printer.Header)
-	tester.Subscribe(login.EVT_VALIDATED, printer.Item)
+	// tester.Subscribe(login.EVT_VALIDATED, printer.Item)
+	tester.Subscribe(login.EVT_DONE, printer.Items)
 	tester.Subscribe(login.EVT_DONE, printer.Footer)
 
 	client := web.NewClient()
