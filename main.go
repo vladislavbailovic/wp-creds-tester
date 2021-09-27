@@ -1,12 +1,17 @@
 package main
 
 import (
+	"os"
 	"wpc/pkg/cli"
 	"wpc/pkg/login"
 	"wpc/pkg/web"
 )
 
 func main() {
+	opts := cli.GetOptions()
+	if nil == opts {
+		os.Exit(1)
+	}
 	generator := login.NewGenerator(
 		login.NewSource([]string{"user1", "bog", "user3"}),
 		login.NewSource([]string{"pass1", "pass2", "bog"}),
