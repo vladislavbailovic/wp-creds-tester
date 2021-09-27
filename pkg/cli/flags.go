@@ -2,6 +2,7 @@ package cli
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"wpc/pkg/data"
 )
@@ -27,6 +28,13 @@ func GetOptions(args ...string) *data.Options {
 	opts.URL = *url
 	opts.Usernames = *users
 	opts.Passwords = *pwds
+
+	if opts.Usernames == "" {
+		opts.Usernames = fmt.Sprintf("gen:%s", data.SRC_RANDCHAR)
+	}
+	if opts.Passwords == "" {
+		opts.Passwords = fmt.Sprintf("gen:%s", data.SRC_RANDCHAR)
+	}
 
 	return opts
 }

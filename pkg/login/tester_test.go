@@ -11,8 +11,8 @@ import (
 
 func TestTesterDoesNotValidateNonRedirects(t *testing.T) {
 	g := &Generator{
-		usernames: NewSource([]string{"user1", "user2", "user3"}),
-		passwords: NewSource([]string{"pass1", "pass2", "pass3"}),
+		usernames: NewSource([]string{"user1", "user2", "user3"}...),
+		passwords: NewSource([]string{"pass1", "pass2", "pass3"}...),
 	}
 	c := web.NewClient()
 
@@ -49,8 +49,8 @@ func TestTesterDoesNotValidateNonRedirects(t *testing.T) {
 
 func TestTesterValidatesAdminRedirects(t *testing.T) {
 	g := &Generator{
-		usernames: NewSource([]string{"invalid1", "valid", "invalid2"}),
-		passwords: NewSource([]string{"badpass1", "goodpass", "badpass2"}),
+		usernames: NewSource([]string{"invalid1", "valid", "invalid2"}...),
+		passwords: NewSource([]string{"badpass1", "goodpass", "badpass2"}...),
 	}
 	c := web.NewClient()
 
@@ -89,8 +89,8 @@ func TestTesterValidatesAdminRedirects(t *testing.T) {
 
 func TestTesterDoesNotValidateNonAdminRedirects(t *testing.T) {
 	g := &Generator{
-		usernames: NewSource([]string{"user1", "user2", "user3"}),
-		passwords: NewSource([]string{"pass1", "pass2", "pass3"}),
+		usernames: NewSource([]string{"user1", "user2", "user3"}...),
+		passwords: NewSource([]string{"pass1", "pass2", "pass3"}...),
 	}
 	c := web.NewClient()
 
@@ -111,8 +111,8 @@ func TestTesterDoesNotValidateNonAdminRedirects(t *testing.T) {
 
 func TestTesterEmitsValidatedEvent(t *testing.T) {
 	g := &Generator{
-		usernames: NewSource([]string{"user1", "user2", "user3"}),
-		passwords: NewSource([]string{"pass1", "pass2", "pass3"}),
+		usernames: NewSource([]string{"user1", "user2", "user3"}...),
+		passwords: NewSource([]string{"pass1", "pass2", "pass3"}...),
 	}
 	c := web.NewClient()
 	handler := func(evtData []interface{}) {

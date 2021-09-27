@@ -8,8 +8,8 @@ import (
 
 func TestLoginGenerator(t *testing.T) {
 	gen := Generator{
-		usernames: NewSource(makeTestList("user", 13)),
-		passwords: NewSource(makeTestList("pass", 12)),
+		usernames: NewSource(makeTestList("user", 13)...),
+		passwords: NewSource(makeTestList("pass", 12)...),
 	}
 	processed := 0
 

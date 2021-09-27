@@ -13,8 +13,8 @@ func main() {
 		os.Exit(1)
 	}
 	generator := login.NewGenerator(
-		login.NewSource([]string{"user1", "bog", "user3"}),
-		login.NewSource([]string{"pass1", "pass2", "bog"}),
+		login.NewSource(opts.Usernames),
+		login.NewSource(opts.Passwords),
 	)
 	tester := login.NewTester("http://multiwp.test/wp-login.php", generator)
 

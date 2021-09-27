@@ -24,10 +24,10 @@ func TestFlagsAreSetFromCliArgs(t *testing.T) {
 	if opts.URL != "test.com" {
 		t.Fatalf("URL should be set")
 	}
-	if opts.Usernames != "" {
-		t.Fatalf("Usernames should be empty at first")
+	if opts.Usernames != "gen:randchar" {
+		t.Fatalf("Usernames should be default at first")
 	}
-	if opts.Passwords != "" {
-		t.Fatalf("Passwords should be empty at first")
+	if opts.Passwords != "gen:randchar" {
+		t.Fatalf("Passwords should be default at first")
 	}
 }
