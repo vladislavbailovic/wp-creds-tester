@@ -2,12 +2,12 @@ package data
 
 import "testing"
 
-func TestOptionsIsASingleton(t *testing.T) {
+func TestOptionsIsNotASingleton(t *testing.T) {
 	opts := GetOptions()
 	opts.URL = "test"
 
 	opts2 := GetOptions()
-	if opts.URL != opts2.URL {
+	if opts.URL == opts2.URL {
 		t.Fatalf("expected options to match")
 	}
 }
