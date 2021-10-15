@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 	"wpc/pkg/data"
 	"wpc/pkg/web"
 )
@@ -21,23 +22,46 @@ type Tester struct {
 	url       string
 	generator *Generator
 	threads   int
+	start     time.Time
+	end       time.Time
 }
 
 func NewTester(url string, generator *Generator) Tester {
 	emitter := data.NewEmitter()
-	return Tester{emitter, url, generator, DEFAULT_THREADS}
+	return Tester{emitter, url, generator, DEFAULT_THREADS, time.Time{}, time.Time{}}
 }
 
 func (t *Tester) SetThreads(threads int) {
 	t.threads = threads
 }
 
-func (t Tester) Test(client *web.Client) []data.ValidatedCreds {
+func (t Tester) GetThreads() int {
+	return t.threads
+}
+
+func (t Tester) GetGenerator() *Generator {
+	return t.generator
+}
+
+func (t Tester) GetStart() time.Time {
+	return t.start
+}
+
+func (t Tester) GetEnd() time.Time {
+	return t.end
+}
+
+func (t Tester) GetDuration() time.Duration {
+	return t.end.Sub(t.start)
+}
+
+func (t *Tester) Test(client *web.Client) []data.ValidatedCreds {
 	conduit := make(chan data.Creds)
 	result := []data.ValidatedCreds{}
 	var wg sync.WaitGroup
 
-	t.Publish(EVT_START)
+	t.start = time.Now()
+	t.Publish(EVT_START, t)
 
 	go t.generator.Generate(conduit)
 	pool := data.NewRange(t.threads)
@@ -50,9 +74,9 @@ func (t Tester) Test(client *web.Client) []data.ValidatedCreds {
 		wg.Add(1)
 		go func(c data.Creds) {
 			defer wg.Done()
-			res := t.validateCreds(c, client)
-			result = append(result, res)
-			t.Publish(EVT_VALIDATED, res)
+			validated := t.validateCreds(c, client)
+			result = append(result, validated)
+			t.Publish(EVT_VALIDATED, validated, t)
 		}(creds)
 		pool.Advance()
 		if !pool.HasNext() {
@@ -63,7 +87,8 @@ func (t Tester) Test(client *web.Client) []data.ValidatedCreds {
 	}
 	wg.Wait()
 
-	t.Publish(EVT_DONE, result)
+	t.end = time.Now()
+	t.Publish(EVT_DONE, result, t)
 
 	return result
 }

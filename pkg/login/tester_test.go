@@ -9,6 +9,29 @@ import (
 	"wpc/pkg/web"
 )
 
+func TestGetGeneratorReturnsGenerator(t *testing.T) {
+	gen := NewGenerator(NewSource("gen:randchar"), NewSource("gen:randchar"))
+	test := NewTester("whatever", gen)
+
+	if test.GetGenerator() != gen {
+		t.Fatalf("generators different")
+	}
+}
+
+func TestGetSetThreads(t *testing.T) {
+	gen := NewGenerator(NewSource("gen:randchar"), NewSource("gen:randchar"))
+	test := NewTester("whatever", gen)
+
+	if test.GetThreads() != DEFAULT_THREADS {
+		t.Fatalf("expected default threads at first")
+	}
+
+	test.SetThreads(1)
+	if test.GetThreads() != 1 {
+		t.Fatalf("expected changed threads")
+	}
+}
+
 func TestTesterDoesNotValidateNonRedirects(t *testing.T) {
 	g := &Generator{
 		usernames: NewSource([]string{"user1", "user2", "user3"}...),

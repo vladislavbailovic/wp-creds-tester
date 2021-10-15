@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"wpc/pkg/cli"
 	"wpc/pkg/login"
@@ -20,10 +21,14 @@ func main() {
 
 	printer := cli.NewPrintSubscriber()
 	tester.Subscribe(login.EVT_START, printer.Header)
-	// tester.Subscribe(login.EVT_VALIDATED, printer.Item)
-	tester.Subscribe(login.EVT_DONE, printer.Items)
+	// tester.Subscribe(login.EVT_VALIDATED, printer.Item) // Follow:true
+	tester.Subscribe(login.EVT_DONE, printer.Items) // Follow:false
 	tester.Subscribe(login.EVT_DONE, printer.Footer)
 
 	client := web.NewClient()
 	tester.Test(client)
+
+	fmt.Println(tester.GetStart())
+	fmt.Println(tester.GetEnd())
+	fmt.Println(tester.GetDuration().Milliseconds())
 }
