@@ -14,7 +14,7 @@ type File struct {
 func NewFile(filename string) data.Source {
 	fp, err := os.Open(filename)
 	if err != nil {
-		panic("No such file: " + filename)
+		return &File{*NewFixedList([]string{filename}).(*FixedList)}
 	}
 	defer fp.Close()
 

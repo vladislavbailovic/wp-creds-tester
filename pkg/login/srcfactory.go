@@ -20,7 +20,7 @@ func newSingleSource(src string) data.Source {
 	}
 	// ...
 	// We exhausted other options, let's assume that's all there is.
-	return source.NewFixedList([]string{src})
+	return source.NewFile(src)
 }
 
 func newGeneratorSource(src string) data.Source {
