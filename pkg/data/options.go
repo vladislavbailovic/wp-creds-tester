@@ -4,6 +4,7 @@ type Options struct {
 	URL       string
 	Usernames string
 	Passwords string
+	Follow    bool
 }
 
 func getDefaultOptions() *Options {

@@ -2,7 +2,7 @@ BINFILE = wpc
 TESTED = .tested.out
 COVERED = coverage.out
 HTMLCOVERED = coverage.html.out
-GOFILES = $(shell find pkg/ -type f -name '*.go')
+GOFILES = $(shell find . -type f -name '*.go')
 
 $(TESTED): $(GOFILES)
 	make test

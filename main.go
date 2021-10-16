@@ -21,8 +21,11 @@ func main() {
 
 	printer := cli.NewPrintSubscriber()
 	tester.Subscribe(login.EVT_START, printer.Header)
-	// tester.Subscribe(login.EVT_VALIDATED, printer.Item) // Follow:true
-	tester.Subscribe(login.EVT_DONE, printer.Items) // Follow:false
+	if opts.Follow {
+		tester.Subscribe(login.EVT_VALIDATED, printer.Item)
+	} else {
+		tester.Subscribe(login.EVT_DONE, printer.Items)
+	}
 	tester.Subscribe(login.EVT_DONE, printer.Footer)
 
 	client := web.NewClient()

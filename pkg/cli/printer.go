@@ -40,11 +40,8 @@ func NewPrintSubscriber() PrintSubscriber {
 }
 
 func (ps PrintSubscriber) Item(evtData []interface{}) {
-	var creds data.ValidatedCreds
-	for _, item := range evtData {
-		creds = item.(data.ValidatedCreds)
-		ps.PrintItem(creds)
-	}
+	creds := evtData[0].(data.ValidatedCreds)
+	ps.PrintItem(creds)
 }
 
 func (ps PrintSubscriber) Items(evtData []interface{}) {

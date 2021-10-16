@@ -17,6 +17,7 @@ func GetOptions(args ...string) *data.Options {
 	url := cli.String("url", opts.URL, "Login URL")
 	users := cli.String("usr", opts.Usernames, "Usernames source")
 	pwds := cli.String("pwd", opts.Passwords, "Passwords source")
+	follow := cli.Bool("follow", false, "Follow as it works")
 	help := cli.Bool("help", false, "Show help")
 
 	cli.Parse(args)
@@ -28,6 +29,7 @@ func GetOptions(args ...string) *data.Options {
 	opts.URL = *url
 	opts.Usernames = *users
 	opts.Passwords = *pwds
+	opts.Follow = *follow
 
 	if opts.Usernames == "" {
 		opts.Usernames = fmt.Sprintf("gen:%s", data.SRC_RANDCHAR)
