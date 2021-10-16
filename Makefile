@@ -1,7 +1,7 @@
 BINFILE = wpc
 TESTED = .tested.out
 COVERED = coverage.out
-HTMLCOVERED = coverage.html.out
+HTMLCOVERED = .coverage.html.out
 GOFILES = $(shell find . -type f -name '*.go')
 
 $(TESTED): $(GOFILES)
@@ -11,11 +11,12 @@ $(BINFILE): $(TESTED) $(COVERED) $(GOFILES)
 	go build
 
 $(COVERED): $(TESTED) $(GOFILES)
-	go test ./... -coverprofile=coverage.out
-	go tool cover -func=coverage.out | grep -v '100.0%'
+	go test ./... -coverprofile=$(COVERED)
+	go tool cover -func=$(COVERED) | grep -v '100.0%'
 
-$(HTMLCOVERED): $(TESTED) $(GOFILES)
-	go tool cover -html=coverage.html.out 
+$(HTMLCOVERED): $(TESTED) $(COVERED) $(GOFILES)
+	go tool cover -html=$(COVERED) 
+	touch $(HTMLCOVERED)
 	
 
 test:
